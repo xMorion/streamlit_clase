@@ -101,7 +101,13 @@ st.pyplot(fig)
 # Se generan 10 ubicaciones aleatorias de clientes.
 latitudes = np.random.uniform(-10, 50, 10)
 longitudes = np.random.uniform(-80, 20, 10)
-df_clientes = pd.DataFrame({"Latitud": latitudes, "Longitud": longitudes})
+df_clientes = pd.DataFrame({
+    "Latitud": np.random.uniform(-10, 50, 10),
+    "Longitud": np.random.uniform(-80, 20, 10),
+    "Nombre": [f"Cliente {i}" for i in range(1, 11)],
+    "Ciudad": np.random.choice(["Madrid", "Barcelona", "Valencia", "Sevilla"], 10)
+})
+
 
 # Mapa de Clientes
 #
@@ -111,9 +117,40 @@ df_clientes = pd.DataFrame({"Latitud": latitudes, "Longitud": longitudes})
 # Resultado: Un mapa interactivo con la distribución de clientes.
 #
 st.subheader("🌍 Distribución Geográfica de Clientes")
+
+youtube_url = "https://www.youtube.com/embed/dQw4w9WgXcQ"
+
 m = folium.Map(location=[20, -40], zoom_start=2)
 for _, row in df_clientes.iterrows():
-    folium.Marker([row["Latitud"], row["Longitud"]], popup="Cliente").add_to(m)
+    # folium.Marker([row["Latitud"], row["Longitud"]], popup="Cliente").add_to(m)
+    # popup_text = f"""
+    # <b>Nombre:</b> {row["Nombre"]} <br>
+    # <b>Ciudad:</b> {row["Ciudad"]} <br>
+    # <b>Latitud:</b> {row["Latitud"]:.2f} <br>
+    # <b>Longitud:</b> {row["Longitud"]:.2f}
+    # """
+    # folium.Marker(
+    #     [row["Latitud"], row["Longitud"]],
+    #     popup=folium.Popup(popup_text, max_width=250),
+    #     tooltip="Ver cliente"
+    # ).add_to(m)
+
+    iframe = f"""
+    <iframe width="250" height="150" src="{youtube_url}" frameborder="0" allowfullscreen></iframe>
+    <br><b>Nombre:</b> {row["Nombre"]} <br>
+    <b>Ciudad:</b> {row["Ciudad"]} <br>
+    <b>Latitud:</b> {row["Latitud"]:.2f} <br>
+    <b>Longitud:</b> {row["Longitud"]:.2f}
+    """
+    
+    popup = folium.Popup(iframe, max_width=300)
+    
+    folium.Marker(
+        [row["Latitud"], row["Longitud"]],
+        popup=popup,
+        tooltip="Ver cliente"
+    ).add_to(m)
+
 folium_static(m)
 
 # Mensaje de despedida
@@ -123,4 +160,3 @@ folium_static(m)
 #
 st.sidebar.markdown(f"👤 Usuario activo: **{nombre_usuario}**")
 st.success(f"¡Bienvenido, {nombre_usuario}! Esperamos que disfrutes del análisis.")
-
